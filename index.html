@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MAXO TEXT PANEL</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    min-height:100vh;
+    background:#000;
+    color:#fff;
+    font-family:Arial,Helvetica,sans-serif;
+    display:flex;
+    justify-content:center;
+    padding:25px 14px;
+}
+
+body:before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    background:
+        radial-gradient(circle at 20% 10%,rgba(255,255,255,.06),transparent 25%),
+        radial-gradient(circle at 80% 90%,rgba(255,255,255,.04),transparent 25%);
+}
+
+.container{
+    width:100%;
+    max-width:720px;
+    position:relative;
+}
+
+.header{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.logo{
+    font-size:42px;
+    font-weight:900;
+    letter-spacing:7px;
+}
+
+.subtitle{
+    margin-top:7px;
+    color:#777;
+    font-size:12px;
+    letter-spacing:3px;
+}
+
+.card{
+    background:#080808;
+    border:1px solid #222;
+    border-radius:22px;
+    padding:20px;
+    margin-bottom:15px;
+    box-shadow:0 15px 50px rgba(0,0,0,.45);
+}
+
+.title{
+    font-size:13px;
+    font-weight:bold;
+    letter-spacing:2px;
+    margin-bottom:15px;
+    color:#aaa;
+}
+
+label{
+    display:block;
+    color:#777;
+    font-size:11px;
+    margin:13px 0 7px;
+    letter-spacing:1px;
+}
+
+input,textarea{
+    width:100%;
+    border:1px solid #252525;
+    background:#000;
+    color:#fff;
+    border-radius:13px;
+    outline:none;
+    padding:13px 14px;
+    font-size:14px;
+    transition:.2s;
+}
+
+input:focus,textarea:focus{
+    border-color:#777;
+    box-shadow:0 0 0 3px rgba(255,255,255,.04);
+}
+
+textarea{
+    min-height:260px;
+    resize:vertical;
+    line-height:1.6;
+    font-family:monospace;
+}
+
+.row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+button{
+    width:100%;
+    min-height:48px;
+    border:0;
+    border-radius:13px;
+    background:#fff;
+    color:#000;
+    font-weight:800;
+    font-size:13px;
+    letter-spacing:1px;
+    cursor:pointer;
+    transition:.2s;
+}
+
+button:hover{
+    transform:translateY(-1px);
+    opacity:.9;
+}
+
+button:active{
+    transform:scale(.98);
+}
+
+button.dark{
+    background:#111;
+    color:#fff;
+    border:1px solid #292929;
+}
+
+.buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:14px;
+}
+
+.status{
+    border:1px solid #222;
+    background:#050505;
+    border-radius:13px;
+    padding:13px;
+    font-size:12px;
+    color:#777;
+    margin-top:13px;
+    word-break:break-word;
+}
+
+.status.success{
+    color:#fff;
+    border-color:#555;
+}
+
+.status.error{
+    color:#aaa;
+    border-color:#555;
+}
+
+.rawbox{
+    display:flex;
+    gap:8px;
+}
+
+.rawbox input{
+    min-width:0;
+}
+
+.small{
+    font-size:10px;
+    color:#555;
+    margin-top:9px;
+    line-height:1.5;
+}
+
+.footer{
+    text-align:center;
+    color:#333;
+    font-size:10px;
+    letter-spacing:2px;
+    margin-top:20px;
+}
+
+@media(max-width:520px){
+    .row,
+    .buttons{
+        grid-template-columns:1fr;
+    }
+
+    .logo{
+        font-size:34px;
+    }
+
+    .card{
+        padding:16px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="header">
+        <div class="logo">MAXO</div>
+        <div class="subtitle">ONLINE TEXT CONTROL PANEL</div>
+    </div>
+
+    <div class="card">
+
+        <div class="title">GITHUB CONNECTION</div>
+
+        <label>GITHUB TOKEN</label>
+        <input
+            id="token"
+            type="password"
+            placeholder="github_pat_..."
+            autocomplete="off"
+        >
+
+        <label>RAW LINK</label>
+
+        <div class="rawbox">
+            <input
+                id="rawLink"
+                type="text"
+                placeholder="https://raw.githubusercontent.com/..."
+            >
+        </div>
+
+        <div class="row">
+
+            <div>
+                <label>BRANCH</label>
+                <input id="branch" value="main">
+            </div>
+
+            <div>
+                <label>FILE</label>
+                <input id="file" value="MAXO.txt">
+            </div>
+
+        </div>
+
+        <div class="buttons">
+
+            <button onclick="loadSettings()">
+                LOAD SAVED
+            </button>
+
+            <button class="dark" onclick="saveSettings()">
+                SAVE SETTINGS
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="title">ONLINE TEXT</div>
+
+        <textarea
+            id="text"
+            placeholder="Your online text..."
+        ></textarea>
+
+        <div class="buttons">
+
+            <button onclick="readFile()">
+                GET ONLINE TEXT
+            </button>
+
+            <button class="dark" onclick="clearText()">
+                CLEAR TEXT
+            </button>
+
+        </div>
+
+        <div class="buttons">
+
+            <button onclick="updateGitHub()">
+                UPDATE GITHUB
+            </button>
+
+            <button class="dark" onclick="openRaw()">
+                OPEN RAW
+            </button>
+
+        </div>
+
+        <div id="status" class="status">
+            READY
+        </div>
+
+    </div>
+
+
+    <div class="card">
+
+        <div class="title">FILE INFORMATION</div>
+
+        <div class="status" id="info">
+            No file loaded.
+        </div>
+
+        <div class="small">
+            The SHA is automatically retrieved from GitHub before updating the file.
+        </div>
+
+    </div>
+
+    <div class="footer">
+        MAXO PANEL
+    </div>
+
+</div>
+
+
+<script>
+const STORAGE_KEY = "MAXO_GITHUB_PANEL";
+
+let currentSha = null;
+let parsedRepo = null;
+
+
+/* -------------------------
+   UI
+------------------------- */
+
+function status(message,type=""){
+    const box = document.getElementById("status");
+
+    box.textContent = message;
+    box.className = "status " + type;
+}
+
+
+/* -------------------------
+   SAVE SETTINGS
+------------------------- */
+
+function saveSettings(){
+
+    const data = {
+        token:document.getElementById("token").value.trim(),
+        rawLink:document.getElementById("rawLink").value.trim(),
+        branch:document.getElementById("branch").value.trim(),
+        file:document.getElementById("file").value.trim()
+    };
+
+    localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(data)
+    );
+
+    status("SETTINGS SAVED","success");
+}
+
+
+/* -------------------------
+   LOAD SETTINGS
+------------------------- */
+
+function loadSettings(){
+
+    const raw = localStorage.getItem(STORAGE_KEY);
+
+    if(!raw){
+        status("NO SAVED SETTINGS","error");
+        return;
+    }
+
+    try{
+
+        const data = JSON.parse(raw);
+
+        document.getElementById("token").value =
+            data.token || "";
+
+        document.getElementById("rawLink").value =
+            data.rawLink || "";
+
+        document.getElementById("branch").value =
+            data.branch || "main";
+
+        document.getElementById("file").value =
+            data.file || "MAXO.txt";
+
+        status("SETTINGS LOADED","success");
+
+    }catch(e){
+
+        status("SAVED DATA IS INVALID","error");
+
+    }
+}
+
+
+/* -------------------------
+   PARSE RAW GITHUB LINK
+------------------------- */
+
+function parseRawLink(){
+
+    const raw =
+        document.getElementById("rawLink").value.trim();
+
+    const regex =
+        /^https:\/\/raw\.githubusercontent\.com\/([^/]+)\/([^/]+)\/([^/]+)\/(.+)$/;
+
+    const match = raw.match(regex);
+
+    if(!match){
+        throw new Error("INVALID GITHUB RAW LINK");
+    }
+
+    const owner = match[1];
+    const repo = match[2];
+    const branch = match[3];
+    const path = match[4];
+
+    parsedRepo = {
+        owner:owner,
+        repo:repo,
+        branch:branch,
+        path:path
+    };
+
+    document.getElementById("branch").value =
+        branch;
+
+    document.getElementById("file").value =
+        path;
+
+    return parsedRepo;
+}
+
+
+/* -------------------------
+   GITHUB API
+------------------------- */
+
+function apiHeaders(){
+
+    const token =
+        document.getElementById("token").value.trim();
+
+    if(!token){
+        throw new Error("GITHUB TOKEN IS EMPTY");
+    }
+
+    return {
+        "Authorization":"Bearer " + token,
+        "Accept":"application/vnd.github+json",
+        "Content-Type":"application/json",
+        "X-GitHub-Api-Version":"2022-11-28"
+    };
+}
+
+
+/* -------------------------
+   GET FILE
+------------------------- */
+
+async function getGitHubFile(){
+
+    if(!parsedRepo){
+        parseRawLink();
+    }
+
+    const r = parsedRepo;
+
+    const api =
+        "https://api.github.com/repos/" +
+        encodeURIComponent(r.owner) +
+        "/" +
+        encodeURIComponent(r.repo) +
+        "/contents/" +
+        r.path.split("/").map(encodeURIComponent).join("/") +
+        "?ref=" +
+        encodeURIComponent(r.branch);
+
+    const response =
+        await fetch(api,{
+            method:"GET",
+            headers:apiHeaders(),
+            cache:"no-store"
+        });
+
+    const data =
+        await response.json();
+
+    if(!response.ok){
+        throw new Error(
+            data.message || "GITHUB API ERROR " + response.status
+        );
+    }
+
+    return data;
+}
+
+
+/* -------------------------
+   READ ONLINE TEXT
+------------------------- */
+
+async function readFile(){
+
+    try{
+
+        status("LOADING FROM GITHUB...");
+
+        parseRawLink();
+
+        const data =
+            await getGitHubFile();
+
+        if(!data.content){
+            throw new Error("FILE CONTENT NOT FOUND");
+        }
+
+        const decoded =
+            decodeURIComponent(
+                escape(
+                    atob(
+                        data.content.replace(/\n/g,"")
+                    )
+                )
+            );
+
+        document.getElementById("text").value =
+            decoded;
+
+        currentSha =
+            data.sha;
+
+        document.getElementById("info").textContent =
+            "FILE: " +
+            parsedRepo.path +
+            " | SHA: " +
+            currentSha.substring(0,12);
+
+        status("TEXT LOADED SUCCESSFULLY","success");
+
+    }catch(e){
+
+        status(
+            "ERROR: " + e.message,
+            "error"
+        );
+
+    }
+}
+
+
+/* -------------------------
+   UPDATE GITHUB
+------------------------- */
+
+async function updateGitHub(){
+
+    try{
+
+        status("PREPARING UPDATE...");
+
+        parseRawLink();
+
+        const text =
+            document.getElementById("text").value;
+
+        if(!text.trim()){
+            if(!confirm("TEXT IS EMPTY. DELETE FILE CONTENT?")){
+                return;
+            }
+        }
+
+        /*
+         * Always retrieve latest SHA.
+         * This prevents stale SHA errors.
+         */
+
+        const latest =
+            await getGitHubFile();
+
+        currentSha =
+            latest.sha;
+
+        const r =
+            parsedRepo;
+
+        const api =
+            "https://api.github.com/repos/" +
+            encodeURIComponent(r.owner) +
+            "/" +
+            encodeURIComponent(r.repo) +
+            "/contents/" +
+            r.path.split("/").map(encodeURIComponent).join("/");
+
+
+        /*
+         * UTF-8 safe Base64
+         */
+
+        const encoded =
+            btoa(
+                unescape(
+                    encodeURIComponent(text)
+                )
+            );
+
+
+        const body = {
+
+            message:
+                "Update " + r.path,
+
+            content:
+                encoded,
+
+            sha:
+                currentSha,
+
+            branch:
+                r.branch
+        };
+
+
+        status("UPDATING GITHUB...");
+
+
+        const response =
+            await fetch(api,{
+                method:"PUT",
+                headers:apiHeaders(),
+                body:JSON.stringify(body)
+            });
+
+
+        const data =
+            await response.json();
+
+
+        if(!response.ok){
+
+            throw new Error(
+                data.message ||
+                "GITHUB UPDATE ERROR " +
+                response.status
+            );
+
+        }
+
+
+        currentSha =
+            data.content &&
+            data.content.sha
+                ? data.content.sha
+                : currentSha;
+
+
+        document.getElementById("info").textContent =
+            "UPDATED | SHA: " +
+            currentSha.substring(0,12);
+
+
+        status(
+            "GITHUB UPDATED SUCCESSFULLY",
+            "success"
+        );
+
+
+    }catch(e){
+
+        status(
+            "ERROR: " + e.message,
+            "error"
+        );
+
+    }
+}
+
+
+/* -------------------------
+   CLEAR
+------------------------- */
+
+function clearText(){
+
+    document.getElementById("text").value = "";
+
+    status("TEXT CLEARED");
+
+}
+
+
+/* -------------------------
+   OPEN RAW
+------------------------- */
+
+function openRaw(){
+
+    const url =
+        document.getElementById("rawLink").value.trim();
+
+    if(!url){
+        status("RAW LINK IS EMPTY","error");
+        return;
+    }
+
+    window.open(
+        url,
+        "_blank",
+        "noopener,noreferrer"
+    );
+}
+
+
+/* -------------------------
+   AUTO LOAD SAVED SETTINGS
+------------------------- */
+
+window.addEventListener(
+    "load",
+    loadSettings
+);
+</script>
+
+</body>
+</html>
