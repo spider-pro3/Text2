@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SPIDER PRO ADMIN</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    width:100%;
+    min-height:100%;
+    background:#000;
+    color:#fff;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    padding:20px;
+}
+
+.container{
+    width:100%;
+    max-width:520px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+    font-size:30px;
+    letter-spacing:4px;
+    margin:10px 0 25px;
+}
+
+.card{
+    background:#050505;
+    border:1px solid #fff;
+    border-radius:22px;
+    padding:20px;
+    margin-bottom:16px;
+    box-shadow:0 0 20px rgba(255,255,255,.08);
+}
+
+label{
+    display:block;
+    font-size:12px;
+    letter-spacing:2px;
+    margin-bottom:8px;
+}
+
+input,textarea{
+    width:100%;
+    background:#000;
+    color:#fff;
+    border:1px solid #555;
+    border-radius:14px;
+    outline:none;
+    padding:14px;
+    font-size:14px;
+    margin-bottom:16px;
+}
+
+textarea{
+    min-height:130px;
+    resize:vertical;
+}
+
+input:focus,
+textarea:focus{
+    border-color:#fff;
+    box-shadow:0 0 12px rgba(255,255,255,.15);
+}
+
+.row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+}
+
+.switch{
+    position:relative;
+    width:58px;
+    height:30px;
+    flex-shrink:0;
+}
+
+.switch input{
+    display:none;
+}
+
+.slider{
+    position:absolute;
+    inset:0;
+    background:#111;
+    border:1px solid #777;
+    border-radius:30px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.slider:before{
+    content:"";
+    position:absolute;
+    width:22px;
+    height:22px;
+    left:3px;
+    top:3px;
+    background:#fff;
+    border-radius:50%;
+    transition:.25s;
+}
+
+.switch input:checked + .slider{
+    background:#fff;
+    border-color:#fff;
+}
+
+.switch input:checked + .slider:before{
+    transform:translateX(28px);
+    background:#000;
+}
+
+.buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+button{
+    width:100%;
+    min-height:48px;
+    border:1px solid #fff;
+    border-radius:15px;
+    background:#fff;
+    color:#000;
+    font-weight:bold;
+    font-size:13px;
+    letter-spacing:1px;
+    cursor:pointer;
+}
+
+button:active{
+    transform:scale(.97);
+}
+
+button.dark{
+    background:#000;
+    color:#fff;
+}
+
+button.danger{
+    background:#000;
+    color:#fff;
+}
+
+.status{
+    border-top:1px solid #333;
+    margin-top:18px;
+    padding-top:15px;
+}
+
+.statusLine{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    font-size:12px;
+    margin:8px 0;
+}
+
+.value{
+    color:#aaa;
+    text-align:right;
+    word-break:break-all;
+}
+
+#log{
+    margin-top:14px;
+    padding:12px;
+    border:1px solid #333;
+    border-radius:12px;
+    min-height:44px;
+    font-size:12px;
+    color:#ccc;
+    white-space:pre-wrap;
+    word-break:break-word;
+}
+
+@media(max-width:380px){
+    body{
+        padding:12px;
+    }
+
+    .card{
+        padding:15px;
+    }
+
+    h1{
+        font-size:25px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>SPIDER PRO</h1>
+
+<div class="card">
+
+<label>GITHUB RAW URL</label>
+
+<input
+    id="raw"
+    type="text"
+    placeholder="https://raw.githubusercontent.com/owner/repo/main/file.json"
+>
+
+<label>GITHUB TOKEN</label>
+
+<input
+    id="token"
+    type="password"
+    placeholder="GitHub token"
+>
+
+<div class="buttons">
+
+<button onclick="saveSettings()">
+SAVE
+</button>
+
+<button class="dark" onclick="loadFile()">
+LOAD
+</button>
+
+</div>
+
+<div class="status">
+
+<div class="statusLine">
+<span>CURRENT VERSION</span>
+<span class="value" id="version">-</span>
+</div>
+
+<div class="statusLine">
+<span>CURRENT SHA</span>
+<span class="value" id="sha">-</span>
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<div class="row">
+
+<label style="margin:0">
+NOTICE ENABLED
+</label>
+
+<label class="switch">
+
+<input
+    id="enabled"
+    type="checkbox"
+>
+
+<span class="slider"></span>
+
+</label>
+
+</div>
+
+<br>
+
+<label>MESSAGE</label>
+
+<textarea
+    id="message"
+    placeholder="Write your notice..."
+></textarea>
+
+<label>MAX SHOW</label>
+
+<input
+    id="maxshow"
+    type="number"
+    min="1"
+    value="3"
+>
+
+<div class="buttons">
+
+<button onclick="updateFile()">
+UPDATE
+</button>
+
+<button
+    class="dark"
+    onclick="disableNotice()"
+>
+DISABLE
+</button>
+
+</div>
+
+<br>
+
+<button
+    class="danger"
+    onclick="clearMessage()"
+>
+CLEAR MESSAGE
+</button>
+
+<div id="log">
+Ready.
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+function $(id){
+    return document.getElementById(id);
+}
+
+function log(text){
+    $("log").textContent = text;
+}
+
+function saveSettings(){
+
+    var raw =
+        $("raw").value.trim();
+
+    var token =
+        $("token").value.trim();
+
+    localStorage.setItem(
+        "spider_raw",
+        raw
+    );
+
+    localStorage.setItem(
+        "spider_token",
+        token
+    );
+
+    log("SETTINGS SAVED.");
+}
+
+function loadSettings(){
+
+    $("raw").value =
+        localStorage.getItem(
+            "spider_raw"
+        ) || "";
+
+    $("token").value =
+        localStorage.getItem(
+            "spider_token"
+        ) || "";
+}
+
+function parseRawUrl(raw){
+
+    var u;
+
+    try{
+        u = new URL(raw);
+    }catch(e){
+        throw new Error(
+            "INVALID URL"
+        );
+    }
+
+    if(
+        u.hostname !==
+        "raw.githubusercontent.com"
+    ){
+        throw new Error(
+            "INVALID GITHUB RAW URL"
+        );
+    }
+
+    var parts =
+        u.pathname
+        .split("/")
+        .filter(Boolean);
+
+    if(parts.length < 4){
+        throw new Error(
+            "INVALID RAW URL"
+        );
+    }
+
+    var owner = parts[0];
+    var repo = parts[1];
+
+    var branch;
+    var path;
+
+    if(
+        parts[2] === "refs" &&
+        parts[3] === "heads"
+    ){
+
+        if(parts.length < 6){
+            throw new Error(
+                "INVALID BRANCH PATH"
+            );
+        }
+
+        branch = parts[4];
+
+        path =
+            parts
+            .slice(5)
+            .join("/");
+
+    }else{
+
+        branch = parts[2];
+
+        path =
+            parts
+            .slice(3)
+            .join("/");
+    }
+
+    if(
+        !owner ||
+        !repo ||
+        !branch ||
+        !path
+    ){
+        throw new Error(
+            "COULD NOT PARSE RAW URL"
+        );
+    }
+
+    return {
+        owner:owner,
+        repo:repo,
+        branch:branch,
+        path:path
+    };
+}
+
+function getApiUrl(info){
+
+    var encodedPath =
+        info.path
+        .split("/")
+        .map(function(part){
+            return encodeURIComponent(part);
+        })
+        .join("/");
+
+    return (
+        "https://api.github.com/repos/" +
+        encodeURIComponent(info.owner) +
+        "/" +
+        encodeURIComponent(info.repo) +
+        "/contents/" +
+        encodedPath +
+        "?ref=" +
+        encodeURIComponent(info.branch)
+    );
+}
+async function getFile(info,token){
+
+    var response;
+
+    try{
+
+        response =
+            await fetch(
+                getApiUrl(info),
+                {
+                    method:"GET",
+                    headers:{
+                        "Accept":
+                            "application/vnd.github+json",
+                        "Authorization":
+                            "Bearer " + token
+                    },
+                    cache:"no-store"
+                }
+            );
+
+    }catch(e){
+
+        throw new Error(
+            "FETCH ERROR\n" +
+            e.message
+        );
+    }
+
+    var text =
+        await response.text();
+
+    if(!response.ok){
+
+        throw new Error(
+            "GET ERROR " +
+            response.status +
+            "\n" +
+            text
+        );
+    }
+
+    var data;
+
+    try{
+
+        data =
+            JSON.parse(text);
+
+    }catch(e){
+
+        throw new Error(
+            "INVALID JSON RESPONSE\n" +
+            text
+        );
+    }
+
+    if(
+        !data.content ||
+        !data.sha
+    ){
+
+        throw new Error(
+            "INVALID GITHUB RESPONSE"
+        );
+    }
+
+    var binary =
+        atob(
+            data.content.replace(
+                /\s/g,
+                ""
+            )
+        );
+
+    var bytes =
+        Uint8Array.from(
+            binary,
+            function(c){
+                return c.charCodeAt(0);
+            }
+        );
+
+    var jsonText =
+        new TextDecoder(
+            "utf-8"
+        ).decode(bytes);
+
+    var json;
+
+    try{
+
+        json =
+            JSON.parse(jsonText);
+
+    }catch(e){
+
+        throw new Error(
+            "text.json IS NOT VALID JSON\n\n" +
+            jsonText
+        );
+    }
+
+    return {
+        sha:data.sha,
+        json:json
+    };
+}
+
+
+function encodeBase64Utf8(text){
+
+    var bytes =
+        new TextEncoder()
+        .encode(text);
+
+    var binary = "";
+
+    for(
+        var i = 0;
+        i < bytes.length;
+        i++
+    ){
+
+        binary +=
+            String.fromCharCode(
+                bytes[i]
+            );
+    }
+
+    return btoa(binary);
+}
+
+
+function buildJson(version){
+
+    var max =
+        parseInt(
+            $("maxshow").value,
+            10
+        );
+
+    if(
+        isNaN(max) ||
+        max < 1
+    ){
+        max = 1;
+    }
+
+    return {
+
+        enabled:
+            $("enabled").checked,
+
+        message:
+            $("message").value,
+
+        max_show:
+            max,
+
+        version:
+            version
+    };
+}
+
+
+async function putFile(
+    info,
+    token,
+    sha,
+    json
+){
+
+    var content =
+        JSON.stringify(
+            json,
+            null,
+            2
+        ) + "\n";
+
+    var body = {
+
+        message:
+            "SPIDER PRO UPDATE v" +
+            json.version,
+
+        content:
+            encodeBase64Utf8(
+                content
+            ),
+
+        sha:
+            sha,
+
+        branch:
+            info.branch
+    };
+
+    var response;
+
+    try{
+
+        response =
+            await fetch(
+                getApiUrl(info),
+                {
+                    method:"PUT",
+
+                    headers:{
+                        "Accept":
+                            "application/vnd.github+json",
+
+                        "Authorization":
+                            "Bearer " + token,
+
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(body)
+                }
+            );
+
+    }catch(e){
+
+        throw new Error(
+            "PUT FETCH ERROR\n" +
+            e.message
+        );
+    }
+
+    var text =
+        await response.text();
+
+    if(!response.ok){
+
+        throw new Error(
+            "PUT ERROR " +
+            response.status +
+            "\n" +
+            text
+        );
+    }
+
+    try{
+
+        return JSON.parse(text);
+
+    }catch(e){
+
+        throw new Error(
+            "INVALID PUT RESPONSE\n" +
+            text
+        );
+    }
+}
+
+
+async function loadFile(){
+
+    try{
+
+        var raw =
+            $("raw")
+            .value
+            .trim();
+
+        var token =
+            $("token")
+            .value
+            .trim();
+
+        if(!raw){
+
+            throw new Error(
+                "RAW URL IS EMPTY"
+            );
+        }
+
+        if(!token){
+
+            throw new Error(
+                "TOKEN IS EMPTY"
+            );
+        }
+
+        var info =
+            parseRawUrl(raw);
+
+        log(
+            "LOADING..."
+        );
+
+        var file =
+            await getFile(
+                info,
+                token
+            );
+
+        var j =
+            file.json || {};
+
+        $("enabled").checked =
+            !!j.enabled;
+
+        $("message").value =
+            j.message || "";
+
+        $("maxshow").value =
+            Math.max(
+                1,
+                parseInt(
+                    j.max_show,
+                    10
+                ) || 3
+            );
+
+        var version =
+            parseInt(
+                j.version,
+                10
+            ) || 1;
+
+        $("version")
+            .textContent =
+            version;
+
+        $("sha")
+            .textContent =
+            file.sha;
+
+        log(
+            "LOAD SUCCESSFUL.\n\n" +
+            "Version: " +
+            version +
+            "\n\nSHA:\n" +
+            file.sha
+        );
+
+    }catch(e){
+
+        log(
+            "LOAD ERROR:\n\n" +
+            e.message
+        );
+    }
+}
+
+
+async function updateFile(){
+
+    try{
+
+        var raw =
+            $("raw")
+            .value
+            .trim();
+
+        var token =
+            $("token")
+            .value
+            .trim();
+
+        if(!raw){
+
+            throw new Error(
+                "RAW URL IS EMPTY"
+            );
+        }
+
+        if(!token){
+
+            throw new Error(
+                "TOKEN IS EMPTY"
+            );
+        }
+
+        var info =
+            parseRawUrl(raw);
+
+        log(
+            "GETTING LATEST FILE..."
+        );
+
+        var latest =
+            await getFile(
+                info,
+                token
+            );
+
+        var currentJson =
+            latest.json || {};
+
+        var currentVersion =
+            parseInt(
+                currentJson.version,
+                10
+            ) || 1;
+
+        var newVersion =
+            currentVersion + 1;
+
+        var json =
+            buildJson(
+                newVersion
+            );
+
+        log(
+            "UPDATING...\n\n" +
+            "VERSION: " +
+            newVersion
+        );
+
+        var result =
+            await putFile(
+                info,
+                token,
+                latest.sha,
+                json
+            );
+
+        var newSha =
+            result.content &&
+            result.content.sha
+                ? result.content.sha
+                : "-";
+
+        $("version")
+            .textContent =
+            newVersion;
+
+        $("sha")
+            .textContent =
+            newSha;
+
+        log(
+            "UPDATE SUCCESSFUL.\n\n" +
+            "VERSION: " +
+            newVersion +
+            "\n\nSHA:\n" +
+            newSha
+        );
+
+    }catch(e){
+
+        log(
+            "UPDATE ERROR:\n\n" +
+            e.message
+        );
+    }
+}
+async function disableNotice(){
+
+    try{
+
+        var raw =
+            $("raw")
+            .value
+            .trim();
+
+        var token =
+            $("token")
+            .value
+            .trim();
+
+        if(!raw){
+
+            throw new Error(
+                "RAW URL IS EMPTY"
+            );
+        }
+
+        if(!token){
+
+            throw new Error(
+                "TOKEN IS EMPTY"
+            );
+        }
+
+        var info =
+            parseRawUrl(raw);
+
+        log(
+            "DISABLING..."
+        );
+
+        var latest =
+            await getFile(
+                info,
+                token
+            );
+
+        var j =
+            latest.json || {};
+
+        var version =
+            parseInt(
+                j.version,
+                10
+            ) || 1;
+
+        j.enabled = false;
+        j.version = version;
+
+        var result =
+            await putFile(
+                info,
+                token,
+                latest.sha,
+                j
+            );
+
+        var newSha =
+            result.content &&
+            result.content.sha
+                ? result.content.sha
+                : "-";
+
+        $("enabled")
+            .checked = false;
+
+        $("version")
+            .textContent =
+            version;
+
+        $("sha")
+            .textContent =
+            newSha;
+
+        log(
+            "NOTICE DISABLED.\n\n" +
+            "VERSION REMAINS: " +
+            version +
+            "\n\nSHA:\n" +
+            newSha
+        );
+
+    }catch(e){
+
+        log(
+            "DISABLE ERROR:\n\n" +
+            e.message
+        );
+    }
+}
+
+
+function clearMessage(){
+
+    $("message")
+        .value = "";
+
+    log(
+        "MESSAGE CLEARED."
+    );
+}
+
+
+loadSettings();
+
+</script>
+
+</body>
+</html>
